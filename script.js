@@ -39,15 +39,25 @@ window.addEventListener("keydown", changeDirection);
 resetBtn.addEventListener("click", resetGame);
 
 gameStart();
-drawPaddles()
+
 
 function gameStart(){
-
+    createBall();
+    nextTick();
 }
 function nextTick(){
-
+      intervalID = setTimeout(()=>{
+        clearBoard();
+        drawPaddles();
+        moveBall();
+        drawBall(ballX, ballY);
+        checkCollision();
+        nextTick();
+      }, 10)
 }
 function clearBoard(){
+    ctx.fillStyle = boardBackground;
+    ctx.fillRect(0, 0, gameWidth, gameHeight);
 
 }
 function drawPaddles(){
@@ -62,19 +72,60 @@ function drawPaddles(){
     ctx.strokeRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
 
 }
-function createBall(){
+function createBall(ballX, ballY){
+    ballSpeed = 1;
+    if(Math.round(Math.random()) == 1){
+        ballXDirection = 1;
+    }else{
+        ballXDirection = -1;
+    }
+
+    if(Math.round(Math.random()) == 1){
+        ballXDirection = 1;
+    }else{
+        ballXDirection = -1;
+    }
+    ballX = gameWidth / 2;
+    ballY = gameHeight/ 2;
+    drawBall();
 
 }
 function moveBall(){
-
+    ballX += ballSpeed * ballXDirection;
+    ballY += ballSpeed * ballYDirection;
+    
 }
 function drawBall(){
+    ctx.fillStyle = ballColor;
+    ctx.strokeStyle = ballBorderColor;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, ballRadius, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fill();
 
 }
 function checkCollision(){
 
 }
-function changeDirection(){
+function changeDirection(event){
+    console.log(event.key)
+    if (event.key === "ArrowUp" && paddle2.y > 0){
+        paddle2.y -= paddleSpeed
+    }
+
+    if (event.key === "ArrowDown" && paddle2.y  < gameHeight - paddle2.height){
+        paddle2.y += paddleSpeed
+    }
+
+    if (event.key === "w" && paddle1.y > 0){
+        paddle1.y -= paddleSpeed
+    }
+
+    if (event.key === "s" && paddle1.y  < gameHeight - paddle1.height){
+        paddle1.y += paddleSpeed
+    }
+    
 
 }
 function updateScore(){
